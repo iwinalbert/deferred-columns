@@ -1,6 +1,6 @@
 # name: test/sql/deferred_columns.test
 # description: test deferred_columns extension
-# group: [deferred_columns]
+# group: [sql]
 
 require deferred_columns
 
