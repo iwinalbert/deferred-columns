@@ -1,0 +1,24 @@
+# name: test/sql/deferred_columns.test
+# description: test deferred_columns extension
+# group: [deferred_columns]
+
+require deferred_columns
+
+# Basic scan test (Phase 1/2)
+query I
+SELECT CAST(imputed_value AS INTEGER) FROM deferred_scan('mock_model')
+----
+42
+42
+42
+42
+42
+
+# AQP Aggregation Test (Phase 3)
+# The scan returns 5 rows of 42.0. Sum is 210. 
+# RMSE is 0.5. count is 5.
+# CI = 1.96 * sqrt(5) * 0.5 = 1.96 * 2.2360679 * 0.5 = 2.191347
+query I
+SELECT sum_ci(imputed_value, 0.5) FROM deferred_scan('mock_model')
+----
+210.000000 +/- 2.191347
