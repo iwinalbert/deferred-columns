@@ -375,7 +375,7 @@ void DeferredScanFunction(ClientContext &context, TableFunctionInput &data, Data
 		}
 	}
 
-	if (state.session && !valid_indices.empty()) {
+	if (state.session && state.model_name != "mock_model" && !valid_indices.empty()) {
 		Ort::MemoryInfo memory_info = Ort::MemoryInfo::CreateCpu(OrtArenaAllocator, OrtMemTypeDefault);
 		std::vector<int64_t> input_shape = {(int64_t)valid_indices.size(), 3};
 		Ort::Value input_tensor =
