@@ -74,6 +74,9 @@ set(EXTENSION_SOURCES src/deferred_columns_extension.cpp src/deferred_scan.cpp s
 build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
 
+set_target_properties(${EXTENSION_NAME} PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+set_target_properties(${LOADABLE_EXTENSION_NAME} PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
+
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(ORT_LIB "${ORT_DIR}/lib/onnxruntime.lib")
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
