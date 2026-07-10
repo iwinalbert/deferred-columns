@@ -4,31 +4,27 @@
 #include <unordered_map>
 #include <vector>
 #include <mutex>
-#include <pthread.h>
+#include <shared_mutex>
 
 namespace duckdb {
 
 class SharedMutex {
-	pthread_rwlock_t rwlock;
+	std::shared_mutex rwlock;
 
 public:
-	SharedMutex() {
-		pthread_rwlock_init(&rwlock, NULL);
-	}
-	~SharedMutex() {
-		pthread_rwlock_destroy(&rwlock);
-	}
+	SharedMutex() = default;
+	~SharedMutex() = default;
 	void lock_shared() {
-		pthread_rwlock_rdlock(&rwlock);
+		rwlock.lock_shared();
 	}
 	void unlock_shared() {
-		pthread_rwlock_unlock(&rwlock);
+		rwlock.unlock_shared();
 	}
 	void lock() {
-		pthread_rwlock_wrlock(&rwlock);
+		rwlock.lock();
 	}
 	void unlock() {
-		pthread_rwlock_unlock(&rwlock);
+		rwlock.unlock();
 	}
 };
 
