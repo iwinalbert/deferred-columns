@@ -7,7 +7,7 @@ namespace duckdb {
 
 struct SumCIState {
 	double sum;
-	double rmse;
+	double sum_rmse_sq;
 	idx_t count;
 };
 
@@ -15,7 +15,7 @@ struct SumCIFunction {
 	template <class STATE>
 	static void Initialize(STATE &state) {
 		state.sum = 0;
-		state.rmse = 0;
+		state.sum_rmse_sq = 0;
 		state.count = 0;
 	}
 
@@ -23,7 +23,7 @@ struct SumCIFunction {
 	static void Combine(const STATE &source, STATE &target, AggregateInputData &) {
 		target.sum += source.sum;
 		target.count += source.count;
-		target.rmse = source.rmse;
+		target.sum_rmse_sq += source.sum_rmse_sq;
 	}
 
 	template <class INPUT_TYPE, class STATE, class OP>
@@ -37,7 +37,7 @@ struct SumCIFunction {
 			finalize_data.ReturnNull();
 			return;
 		}
-		double ci = 1.96 * std::sqrt(state.count) * state.rmse;
+		double ci = 1.96 * std::sqrt(state.sum_rmse_sq);
 		std::string res = std::to_string(state.sum) + " +/- " + std::to_string(ci);
 		target = StringVector::AddString(finalize_data.result, res.c_str(), res.size());
 	}
@@ -68,7 +68,7 @@ static void SumCIUpdate(Vector inputs[], AggregateInputData &aggr_input_data, id
 		}
 		auto state = states[i];
 		state->sum += val_data[idx1];
-		state->rmse = rmse_data[idx2];
+		state->sum_rmse_sq += (rmse_data[idx2] * rmse_data[idx2]);
 		state->count++;
 	}
 }

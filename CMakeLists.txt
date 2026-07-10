@@ -17,6 +17,7 @@ set(CMAKE_CXX_STANDARD "17" CACHE STRING "C++ standard to enforce")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(src/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-linux-x64-1.17.1/include)
 
 set(EXTENSION_SOURCES src/deferred_columns_extension.cpp src/deferred_scan.cpp src/deferred_optimizer.cpp src/model_registry.cpp src/deferred_aggregates.cpp)
 
@@ -24,8 +25,8 @@ build_static_extension(${TARGET_NAME} ${EXTENSION_SOURCES})
 build_loadable_extension(${TARGET_NAME} " " ${EXTENSION_SOURCES})
 
 # Link OpenSSL in both the static library as the loadable extension
-target_link_libraries(${EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto)
-target_link_libraries(${LOADABLE_EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(${EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto ${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-linux-x64-1.17.1/lib/libonnxruntime.so)
+target_link_libraries(${LOADABLE_EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto ${CMAKE_CURRENT_SOURCE_DIR}/onnxruntime-linux-x64-1.17.1/lib/libonnxruntime.so)
 
 install(
   TARGETS ${EXTENSION_NAME}

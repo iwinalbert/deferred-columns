@@ -8,13 +8,13 @@ ModelRegistry &ModelRegistry::GetInstance() {
 	return instance;
 }
 
-void ModelRegistry::RegisterModel(const std::string &name, int version, double rmse, bool is_active) {
-	std::lock_guard<std::mutex> guard(lock_);
-	models_[name].push_back({name, version, rmse, is_active});
+void ModelRegistry::RegisterModel(const std::string &name, int version, double rmse, const std::string &file_path, bool is_active) {
+	UniqueLockGuard<SharedMutex> guard(lock_);
+	models_[name].push_back({name, version, rmse, is_active, file_path});
 }
 
 ModelMetadata ModelRegistry::GetModel(const std::string &name, int version) {
-	std::lock_guard<std::mutex> guard(lock_);
+	SharedLockGuard<SharedMutex> guard(lock_);
 	auto it = models_.find(name);
 	if (it == models_.end() || it->second.empty()) {
 		throw InvalidInputException("Model not found in registry: " + name);
