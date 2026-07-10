@@ -8,7 +8,8 @@ ModelRegistry &ModelRegistry::GetInstance() {
 	return instance;
 }
 
-void ModelRegistry::RegisterModel(const std::string &name, int version, double rmse, const std::string &file_path, bool is_active) {
+void ModelRegistry::RegisterModel(const std::string &name, int version, double rmse, const std::string &file_path,
+                                  bool is_active) {
 	UniqueLockGuard<SharedMutex> guard(lock_);
 	models_[name].push_back({name, version, rmse, is_active, file_path});
 }
