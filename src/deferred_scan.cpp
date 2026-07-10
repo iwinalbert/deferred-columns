@@ -152,7 +152,12 @@ unique_ptr<GlobalTableFunctionState> DeferredScanInit(ClientContext &context, Ta
 
 	if (!state->model_path.empty()) {
 		try {
+#ifdef _WIN32
+			std::wstring wide_model_path(state->model_path.begin(), state->model_path.end());
+			state->session = make_uniq<Ort::Session>(*(state->env), wide_model_path.c_str(), session_options);
+#else
 			state->session = make_uniq<Ort::Session>(*(state->env), state->model_path.c_str(), session_options);
+#endif
 		} catch (const Ort::Exception &e) {
 			throw duckdb::InvalidInputException(std::string("ORT Load Exception: ") + e.what());
 		} catch (...) {
