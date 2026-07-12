@@ -1,5 +1,7 @@
 # Deferred Columns
 
+🎉 **Official DuckDB Community Extension** 🎉
+
 **A DuckDB Extension for Native ML Imputation via Virtual Partitioning**
 
 This extension natively hooks into DuckDB to dynamically compute missing column values using Machine Learning models. Instead of performing expensive, full-table backfills when a schema evolves, this extension imputes missing values on-demand at scan time.
